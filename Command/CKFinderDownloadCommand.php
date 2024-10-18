@@ -14,6 +14,7 @@ namespace CKSource\Bundle\CKFinderBundle\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Filesystem\Filesystem;
@@ -34,7 +35,8 @@ class CKFinderDownloadCommand extends Command
     protected function configure()
     {
         $this->setName('ckfinder:download')
-             ->setDescription('Downloads the CKFinder distribution package and extracts it to CKSourceCKFinderBundle.');
+            ->addOption('no-verbose', null, InputOption::VALUE_NONE, 'no verbose')
+            ->setDescription('Downloads the CKFinder distribution package and extracts it to CKSourceCKFinderBundle.');
     }
 
     /**
@@ -70,7 +72,7 @@ class CKFinderDownloadCommand extends Command
             return 1;
         }
 
-        if (file_exists($targetPublicPath.'/ckfinder/ckfinder.js')) {
+        if (!$input->getOption('no-verbose') && file_exists($targetPublicPath.'/ckfinder/ckfinder.js')) {
             $questionHelper = $this->getHelper('question');
             $questionText =
                 'It looks like the CKFinder distribution package has already been installed. ' .
